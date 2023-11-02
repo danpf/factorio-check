@@ -1,0 +1,6 @@
+Metadata-Version: 2.1
+Name: factorio-check
+Version: 1.0.0
+Summary: A library for helping with factorio testing
+Author-email: Danny Farrell <danpf@uw.edu>
+Requires-Python: >=3.8

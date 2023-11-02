@@ -1,0 +1,8 @@
+pyproject.toml
+factorio_check/__init__.py
+factorio_check/packaging.py
+factorio_check.egg-info/PKG-INFO
+factorio_check.egg-info/SOURCES.txt
+factorio_check.egg-info/dependency_links.txt
+factorio_check.egg-info/entry_points.txt
+factorio_check.egg-info/top_level.txt

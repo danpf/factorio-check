@@ -1,0 +1,2 @@
+[console_scripts]
+package-addons = factorio_check.packaging:main_cli
