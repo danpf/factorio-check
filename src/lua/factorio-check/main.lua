@@ -43,6 +43,8 @@ end
 function Public.run_tests()
     local passed = 0
     local failed = 0
+    print("UNIT TESTS START")
+    log("UNIT TESTS START")
 
     for name, test_function in pairs(global.registered_tests) do
         local status, err = pcall(test_function)
@@ -60,7 +62,9 @@ function Public.run_tests()
 	local total = passed + failed
 
     print("Total tests passed: " .. passed)
+    log("Total tests passed: " .. passed)
     print("Total tests failed: " .. failed)
+    log("Total tests failed: " .. failed)
     print("UNIT TESTS DONE: " .. passed .. "/" .. total)
     log("UNIT TESTS DONE: " .. passed .. "/" .. total)
 end
