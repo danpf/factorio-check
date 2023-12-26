@@ -36,7 +36,7 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         file: docker/Dockerfile
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/factorio-test-headless:${{ matrix.version_and_sha.version }}-base
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/factorio-check:${{ matrix.version_and_sha.version }}-base
         build-args: |
           VERSION=${{ matrix.version_and_sha.version }}
           SHA256=${{ matrix.version_and_sha.sha256 }}
@@ -46,18 +46,18 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         file: docker/Dockerfile.mod-test
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/factorio-test-headless:${{ matrix.version_and_sha.version }}-simple-mod
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/factorio-check:${{ matrix.version_and_sha.version }}-simple-mod
         build-args: |
           BASETAG=${{ matrix.version_and_sha.version }}-base
         load: true
 
     - name: Build and run Docker tests
       run: |
-        docker run --rm -t ${{ secrets.DOCKERHUB_USERNAME }}/factorio-test-headless:${{ matrix.version_and_sha.version }}-simple-mod ls /opt/factorio
-        docker run --rm -t ${{ secrets.DOCKERHUB_USERNAME }}/factorio-test-headless:${{ matrix.version_and_sha.version }}-simple-mod ls /opt/factorio
-        docker run --rm -t ${{ secrets.DOCKERHUB_USERNAME }}/factorio-test-headless:${{ matrix.version_and_sha.version }}-simple-mod ls /opt/factorio/bin
-        docker run --rm --entrypoint run-factorio-test -t ${{ secrets.DOCKERHUB_USERNAME }}/factorio-test-headless:${{ matrix.version_and_sha.version }}-simple-mod --help
-        docker run --rm --entrypoint run-factorio-test -t ${{ secrets.DOCKERHUB_USERNAME }}/factorio-test-headless:${{ matrix.version_and_sha.version }}-simple-mod --factorio_executable /opt/factorio/bin/x64/factorio
+        docker run --rm -t ${{ secrets.DOCKERHUB_USERNAME }}/factorio-check:${{ matrix.version_and_sha.version }}-simple-mod ls /opt/factorio
+        docker run --rm -t ${{ secrets.DOCKERHUB_USERNAME }}/factorio-check:${{ matrix.version_and_sha.version }}-simple-mod ls /opt/factorio
+        docker run --rm -t ${{ secrets.DOCKERHUB_USERNAME }}/factorio-check:${{ matrix.version_and_sha.version }}-simple-mod ls /opt/factorio/bin
+        docker run --rm --entrypoint run-factorio-test -t ${{ secrets.DOCKERHUB_USERNAME }}/factorio-check:${{ matrix.version_and_sha.version }}-simple-mod --help
+        docker run --rm --entrypoint run-factorio-test -t ${{ secrets.DOCKERHUB_USERNAME }}/factorio-check:${{ matrix.version_and_sha.version }}-simple-mod --factorio_executable /opt/factorio/bin/x64/factorio
         echo "done?
     # - name: Set up environment
     #   run: |
