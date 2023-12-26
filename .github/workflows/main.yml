@@ -58,7 +58,7 @@ jobs:
         docker run --rm -t ${{ secrets.DOCKERHUB_USERNAME }}/factorio-check:${{ matrix.version_and_sha.version }}-simple-mod ls /opt/factorio/bin
         docker run --rm --entrypoint run-factorio-test -t ${{ secrets.DOCKERHUB_USERNAME }}/factorio-check:${{ matrix.version_and_sha.version }}-simple-mod --help
         docker run --rm --entrypoint run-factorio-test -t ${{ secrets.DOCKERHUB_USERNAME }}/factorio-check:${{ matrix.version_and_sha.version }}-simple-mod --factorio_executable /opt/factorio/bin/x64/factorio
-        echo "done?
+        echo "done?"
     # - name: Set up environment
     #   run: |
     #     sudo apt-get update
