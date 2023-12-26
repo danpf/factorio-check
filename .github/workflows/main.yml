@@ -47,6 +47,8 @@ jobs:
       with:
         file: docker/Dockerfile.mod-test
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/factorio-test-headless:${{ matrix.version_and_sha.version }}-simple-mod
+        build-args: |
+          BASETAG=${{ matrix.version_and_sha.version }}-base
         load: true
 
     - name: Build and run Docker tests
