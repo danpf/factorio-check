@@ -2,4 +2,3 @@ ARG BASETAG
 FROM danpfuw/factorio-check:${BASETAG}
 
 ADD src/lua/simple-mod /opt/factorio/mods/simple-mod
-ADD src/lua/Factorio-Biter-Battles /opt/factorio/scenarios/Factorio-Biter-Battles
