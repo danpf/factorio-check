@@ -40,6 +40,8 @@ jobs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
         load: true
+        build-contexts: |
+          danpf/factorio-test-headless:latest=docker-image://danpf/factorio-test-headless:latest
 
     - name: Build and run Docker tests
       run: |
