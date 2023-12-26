@@ -10,7 +10,7 @@ jobs:
   lint-lua:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@4
       - name: lint
         uses: Roang-zero1/factorio-mod-luacheck@master
         with:
