@@ -57,7 +57,7 @@ jobs:
         docker run --rm -t ${{ secrets.DOCKERHUB_USERNAME }}/factorio-check:${{ matrix.version_and_sha.version }}-simple-mod ls /opt/factorio
         docker run --rm -t ${{ secrets.DOCKERHUB_USERNAME }}/factorio-check:${{ matrix.version_and_sha.version }}-simple-mod ls /opt/factorio/bin
         docker run --rm --entrypoint run-factorio-test -t ${{ secrets.DOCKERHUB_USERNAME }}/factorio-check:${{ matrix.version_and_sha.version }}-simple-mod --help
-        docker run --rm --entrypoint run-factorio-test -t ${{ secrets.DOCKERHUB_USERNAME }}/factorio-check:${{ matrix.version_and_sha.version }}-simple-mod --factorio_executable /opt/factorio/bin/x64/factorio
+        docker run --rm --entrypoint run-factorio-test -e LOGLEVEL=DEBUG -t ${{ secrets.DOCKERHUB_USERNAME }}/factorio-check:${{ matrix.version_and_sha.version }}-simple-mod --factorio_executable /opt/factorio/bin/x64/factorio
         echo "done?"
     # - name: Set up environment
     #   run: |
