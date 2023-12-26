@@ -67,5 +67,5 @@ ENV PATH="/opt/venv/bin:$PATH"
 
 VOLUME /factorio
 EXPOSE $PORT/udp $RCON_PORT/tcp
-ENTRYPOINT ["/docker-entrypoint.sh"]
+# ENTRYPOINT ["/docker-entrypoint.sh"]
 
