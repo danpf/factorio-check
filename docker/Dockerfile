@@ -39,7 +39,7 @@ RUN set -ox pipefail \
     && archive="/tmp/factorio_headless_x64_$VERSION.tar.xz" \
     && mkdir -p /opt /factorio \
     && apt-get -q update \
-    && DEBIAN_FRONTEND=noninteractive apt-get -qy install file ca-certificates curl jq pwgen xz-utils python3 python3-pip python3-venv --no-install-recommends \
+    && DEBIAN_FRONTEND=noninteractive apt-get -qy install file ca-certificates curl jq pwgen xz-utils python3 python3-pip python3-venv vim --no-install-recommends \
     && rm -rf /var/lib/apt/lists/* \
     && curl -sSL "https://www.factorio.com/get-download/$VERSION/headless/linux64" -o "$archive" --retry $CURL_RETRIES\
     && echo "$SHA256  $archive" | sha256sum -c \
@@ -55,10 +55,12 @@ RUN set -ox pipefail \
     && chown -R "$USER":"$GROUP" /opt/factorio /factorio
 
 COPY docker/files/*.sh /
+COPY docker/files/server-settings.json /opt/factorio/server-settings.json
 COPY docker/files/config.ini /opt/factorio/config/config.ini
 COPY src/python/factorio_check /tmp/factorio_check
 RUN python3 -m venv /opt/venv \
     && /opt/venv/bin/pip install --no-cache-dir /tmp/factorio_check
+COPY src/lua/factorio-check /opt/factorio/mods/factorio-check
 
 ENV VIRTUAL_ENV /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"

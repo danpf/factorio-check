@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 import logging
 import os
 from pathlib import Path
+import time
 import subprocess
 import sys
 from typing import Any, Generator
@@ -18,9 +19,12 @@ class FactorioController:
     factorio_mods_dir: Path | None
     factorio_process: subprocess.Popen | None = None
     testing_logs: list[str] = field(default_factory=list)
+    max_seconds: int = 60
+    start_time: int = 0
 
     def launch_game(self) -> None:
         args = self.build_args(self.factorio_executable, self.factorio_mods_dir)
+        self.start_time = int(time.time())
         self.factorio_process = subprocess.Popen(
             executable=self.factorio_executable,
             args=args,
@@ -28,7 +32,7 @@ class FactorioController:
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
         )
-        log.info(f"Started factorio process {self.factorio_process}")
+        log.info(f"Started factorio process {self.factorio_process} {' '.join(args)}")
 
     def terminate_game(self) -> None:
         if self.factorio_process is not None:
@@ -61,28 +65,41 @@ class FactorioController:
         """
         Runs the unit tests and adds up the testing_logs
         """
+        log.info("Executing unit tests...")
         unit_tests_start = False
         self.testing_logs = []
         for line in self.get_game_output():
+            if line is False:
+                log.warning("Game output is false, process may have terminated...")
+                break
+            c_time = time.time()
+            if int(c_time - self.start_time) > self.max_seconds:
+                log.warning("Max seconds exceeded, terminating...")
+                break
             if isinstance(line, str):
-                if line.startswith("UNIT TESTS START"):
+                log.info(f"LLINER {line}")
+                if "UNIT TESTS START" in line:
+                    log.debug("begin adding line")
                     unit_tests_start = True
                     self.testing_logs.append(line)
-                elif unit_tests_start:
-                    self.testing_logs.append(line)
-                elif line.startswith("UNIT TESTS DONE"):
+                elif "UNIT TESTS DONE" in line:
+                    log.debug("done adding line")
                     self.testing_logs.append(line)
                     self.terminate_game()
+                    log.info("Unit tests end found, ending gracefully...")
                     break
+                elif unit_tests_start:
+                    log.debug("adding line")
+                    self.testing_logs.append(line)
 
     def analyze_unit_test_results(self) -> bool:
         failed_tests = False
         log.info("analyzing...")
         for line in self.testing_logs:
-            print(line)
+            log.info(line)
         failed_tests = False
         for line in self.testing_logs:
-            if line.startswith("Total tests failed"):
+            if "Total tests failed" in line:
                 split_line = line.split()
                 if int(split_line[-1]) == 0:
                     failed_tests = True
@@ -91,7 +108,7 @@ class FactorioController:
     def build_args(self, factorio_executable: Path, factorio_mods_dir: Path | None) -> list[str]:
         args = [
             str(factorio_executable),
-            "--load-scenario",
+            "--start-server-load-scenario",
             "base/freeplay",
         ]
         if factorio_mods_dir is not None:

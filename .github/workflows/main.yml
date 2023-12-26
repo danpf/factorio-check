@@ -37,8 +37,8 @@ jobs:
       run: |
         docker run --rm -t danpf/factorio-test-headless ls /opt/factorio/*
         docker run --rm -t danpf/factorio-test-headless ls /opt/factorio/bin/*
-        docker run --rm -t danpf/factorio-test-headless run-factorio-test --help
-        docker run --rm -t danpf/factorio-test-headless run-factorio-test --factorio_executable /opt/factorio/bin/factorio
+        docker run --rm --entrypoint run-factorio-test -t danpf/factorio-test-headless --help
+        docker run --rm --entrypoint run-factorio-test -t danpf/factorio-test-headless --factorio_executable /opt/factorio/bin/x64/factorio
         echo "done?"
     # - name: Set up environment
     #   run: |
