@@ -28,8 +28,9 @@ jobs:
         build-args: |
           VERSION=1.1.91
           SHA256=2288b21afb1d96aa06712a2ae2e31b9c45f0aa4a2e9dec041125d874f0781f6d
-        cache-from: type=registry,ref=danpf/factorio-test-headless:latest
-        cache-to: type=inline
+      cache-from: type=gha
+      cache-to: type=gha,mode=max
+
 
     - name: Build and run Docker tests
       run: |
@@ -37,7 +38,6 @@ jobs:
         docker run --rm -t danpf/factorio-test-headless ls /opt/factorio/bin/*
         docker run --rm -t danpf/factorio-test-headless run-factorio-test --help
         docker run --rm -t danpf/factorio-test-headless run-factorio-test --factorio_executable /opt/factorio/bin/factorio
-        # docker build --platform linux/amd64 . -t factoriotest  --build-arg VERSION=1.1.91 --build-arg SHA256=2288b21afb1d96aa06712a2ae2e31b9c45f0aa4a2e9dec041125d874f0781f6d -f docker/Dockerfile
         echo "done?"
     # - name: Set up environment
     #   run: |
@@ -49,3 +49,5 @@ jobs:
     #     cd tests/factorio-check
     #     lua main.lua
 
+        # cache-from: type=registry,ref=danpf/factorio-test-headless:latest
+        # cache-to: type=inline
