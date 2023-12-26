@@ -33,10 +33,10 @@ jobs:
 
     - name: Build and run Docker tests
       run: |
-        docker run -it danpf/factorio-test-headless ls /opt/factorio/*
-        docker run -it danpf/factorio-test-headless ls /opt/factorio/bin/*
-        docker run -it danpf/factorio-test-headless run-factorio-test --help
-        docker run -it danpf/factorio-test-headless run-factorio-test --factorio_executable /opt/factorio/bin/factorio
+        docker run --rm -t danpf/factorio-test-headless ls /opt/factorio/*
+        docker run --rm -t danpf/factorio-test-headless ls /opt/factorio/bin/*
+        docker run --rm -t danpf/factorio-test-headless run-factorio-test --help
+        docker run --rm -t danpf/factorio-test-headless run-factorio-test --factorio_executable /opt/factorio/bin/factorio
         # docker build --platform linux/amd64 . -t factoriotest  --build-arg VERSION=1.1.91 --build-arg SHA256=2288b21afb1d96aa06712a2ae2e31b9c45f0aa4a2e9dec041125d874f0781f6d -f docker/Dockerfile
         echo "done?"
     # - name: Set up environment
