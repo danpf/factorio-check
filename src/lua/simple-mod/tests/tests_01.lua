@@ -1,9 +1,8 @@
-
 local FC = require("__factorio-check__/main")
-
 local ModSRC = require("modsrc.main")
 
-Public = {}
+local Public = {}
+
 function Public.add_tests()
 	FC.register_test("test is 22", function()
 		local ret = ModSRC.ret_22()

@@ -27,7 +27,11 @@ jobs:
         tags: factorio-test-headless:latest
 
     - name: Build and run Docker tests
-      run: docker run -it factorio-test-headless run-factorio-test --factorio_executable 
+      run: |
+        ls /opt/factorio/*
+        ls /opt/factorio/bin
+        docker run -it factorio-test-headless run-factorio-test --factorio_executable /opt/factorio/bin/factorio
+        echo "done?"
     # - name: Set up environment
     #   run: |
     #     sudo apt-get update

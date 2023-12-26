@@ -1,7 +1,7 @@
-
-Public = {}
 local FC = require("__factorio-check__/main")
 local tests_01 = require("tests_01")
+
+local Public = {}
 
 function Public.tests_entrypoint()
 	FC.init()

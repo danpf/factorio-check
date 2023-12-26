@@ -4,7 +4,7 @@
 require("util")
 
 -- Table to hold registered test cases
-Public = {}
+local Public = {}
 
 -- Function to register a new test
 function Public.init()
