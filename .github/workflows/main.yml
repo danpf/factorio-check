@@ -15,6 +15,10 @@ jobs:
       matrix:
         version_and_sha: [{version: 1.1.101,sha256: 0688a6f615a87bf73d3f46b53dc423ee37cad3fc4412723f3d7450aed1638392},{version: 1.1.100,sha256: 9850dd146f93ee4da8ba06316591888860a4058c8548409cdfb5dd693abcd834}]
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    environment:
+      name: cicd
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -27,10 +31,6 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-      permissions:
-        id-token: write
-      environment:
-        name: cicd
 
     - name: Build and push
       uses: docker/build-push-action@v5
