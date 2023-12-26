@@ -32,13 +32,21 @@ jobs:
         cache-to: type=gha,mode=max
         load: true
 
+    - name: Build and push
+      uses: docker/build-push-action@v5
+      with:
+        file: docker/Dockerfile.mod-test
+        tags: danpf/factorio-test-headless-simple-mod:latest
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        load: true
 
     - name: Build and run Docker tests
       run: |
-        docker run --rm -t danpf/factorio-test-headless:latest ls /opt/factorio
-        docker run --rm -t danpf/factorio-test-headless:latest ls /opt/factorio/bin
-        docker run --rm --entrypoint run-factorio-test -t danpf/factorio-test-headless:latest --help
-        docker run --rm --entrypoint run-factorio-test -t danpf/factorio-test-headless --factorio_executable /opt/factorio/bin/x64/factorio
+        docker run --rm -t danpf/factorio-test-headless-simple-mod:latest ls /opt/factorio
+        docker run --rm -t danpf/factorio-test-headless-simple-mod:latest ls /opt/factorio/bin
+        docker run --rm --entrypoint run-factorio-test -t danpf/factorio-test-headless-simple-mod:latest --help
+        docker run --rm --entrypoint run-factorio-test -t danpf/factorio-test-headless-simple-mod --factorio_executable /opt/factorio/bin/x64/factorio
         echo "done?"
     # - name: Set up environment
     #   run: |
