@@ -27,6 +27,10 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
+      permissions:
+        id-token: write
+      environment:
+        name: cicd
 
     - name: Build and push
       uses: docker/build-push-action@v5
