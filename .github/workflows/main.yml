@@ -10,15 +10,11 @@ on:
       - master
 
 jobs:
-  versions_and_tags:
-
   test:
     strategy:
       matrix:
         version_and_sha: [{version: 1.1.101,sha256: 0688a6f615a87bf73d3f46b53dc423ee37cad3fc4412723f3d7450aed1638392},{version: 1.1.100,sha256: 9850dd146f93ee4da8ba06316591888860a4058c8548409cdfb5dd693abcd834}]
-
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -51,6 +47,7 @@ jobs:
 
     - name: Build and run Docker tests
       run: |
+        docker run --rm -t ${{ secrets.DOCKERHUB_USERNAME }}/factorio-test-headless:${{ matrix.version_and_sha.version }}-simple-mod ls /opt/factorio
         docker run --rm -t ${{ secrets.DOCKERHUB_USERNAME }}/factorio-test-headless:${{ matrix.version_and_sha.version }}-simple-mod ls /opt/factorio
         docker run --rm -t ${{ secrets.DOCKERHUB_USERNAME }}/factorio-test-headless:${{ matrix.version_and_sha.version }}-simple-mod ls /opt/factorio/bin
         docker run --rm --entrypoint run-factorio-test -t ${{ secrets.DOCKERHUB_USERNAME }}/factorio-test-headless:${{ matrix.version_and_sha.version }}-simple-mod --help
