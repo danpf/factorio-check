@@ -35,8 +35,8 @@ jobs:
 
     - name: Build and run Docker tests
       run: |
-        docker run --rm -t danpf/factorio-test-headless:latest ls /opt/factorio/*
-        docker run --rm -t danpf/factorio-test-headless:latest ls /opt/factorio/bin/*
+        docker run --rm --entrypoint bash -t danpf/factorio-test-headless:latest ls /opt/factorio/*
+        docker run --rm --entrypoint bash -t danpf/factorio-test-headless:latest ls /opt/factorio/bin/*
         docker run --rm --entrypoint run-factorio-test -t danpf/factorio-test-headless:latest --help
         # docker run --rm --entrypoint run-factorio-test -t danpf/factorio-test-headless --factorio_executable /opt/factorio/bin/x64/factorio
         echo "done?"
