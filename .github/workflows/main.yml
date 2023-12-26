@@ -25,11 +25,16 @@ jobs:
       with:
         file: docker/Dockerfile
         tags: factorio-test-headless:latest
+        build-args: |
+          VERSION=1.1.91
+          SHA256=2288b21afb1d96aa06712a2ae2e31b9c45f0aa4a2e9dec041125d874f0781f6d
 
     - name: Build and run Docker tests
       run: |
         ls /opt/factorio/*
         ls /opt/factorio/bin
+        # docker build --platform linux/amd64 . -t factoriotest  --build-arg VERSION=1.1.91 --build-arg SHA256=2288b21afb1d96aa06712a2ae2e31b9c45f0aa4a2e9dec041125d874f0781f6d -f docker/Dockerfile
+
         docker run -it factorio-test-headless run-factorio-test --factorio_executable /opt/factorio/bin/factorio
         echo "done?"
     # - name: Set up environment
