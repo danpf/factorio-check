@@ -2,7 +2,7 @@
 
 local Public = {}
 
-function Public.ret_22() 
+function Public.ret_22()
 	return 22
 end
 
