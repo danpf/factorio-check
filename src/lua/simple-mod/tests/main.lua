@@ -7,8 +7,7 @@ function Public.tests_entrypoint()
 	FC.init()
 	tests_01.add_tests()
 	FC.run_tests()
-
 	FC.reset_global_state()
-	FC.run_tests()
 end
+
 return Public
