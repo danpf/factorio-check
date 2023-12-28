@@ -32,7 +32,8 @@ jobs:
         username: danpfuw
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Build and push
+    # TODO only on tag
+    - name: Build and push base
       uses: docker/build-push-action@v5
       with:
         file: docker/Dockerfile
@@ -42,7 +43,7 @@ jobs:
           SHA256=${{ matrix.version_and_sha.sha256 }}
         push: true
 
-    - name: Build and push
+    - name: Build and push mod test
       uses: docker/build-push-action@v5
       with:
         file: docker/Dockerfile.mod-test
@@ -51,8 +52,17 @@ jobs:
           BASETAG=${{ matrix.version_and_sha.version }}-base
         load: true
 
+    - name: Build and push scenario test
+      uses: docker/build-push-action@v5
+      with:
+        file: docker/Dockerfile.scenario-test
+        tags: danpfuw/factorio-check:${{ matrix.version_and_sha.version }}-simple-scenario
+        build-args: |
+          BASETAG=${{ matrix.version_and_sha.version }}-base
+        load: true
+
     - name: Build and run simple-mod tests
       run: docker run --rm --entrypoint run-factorio-test -e LOGLEVEL=DEBUG -t danpfuw/factorio-check:${{ matrix.version_and_sha.version }}-simple-mod --factorio_executable /opt/factorio/bin/x64/factorio
 
     - name: Build and run simple-scenario tests
-      run: docker run --rm --entrypoint run-factorio-test -e LOGLEVEL=DEBUG -t danpfuw/factorio-check:${{ matrix.version_and_sha.version }}-simple-mod --factorio_executable /opt/factorio/bin/x64/factorio
+      run: docker run --rm --entrypoint run-factorio-test -e LOGLEVEL=DEBUG -t danpfuw/factorio-check:${{ matrix.version_and_sha.version }}-simple-scenario --factorio_executable /opt/factorio/bin/x64/factorio
