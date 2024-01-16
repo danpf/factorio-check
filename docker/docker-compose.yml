@@ -1,18 +1,23 @@
 version: '2'
 services:
   factorio:
+    platform: linux/amd64
+    entrypoint: /opt/factorio/bin/x64/factorio
+    command:  ["--start-server-load-scenario", "Factorio-Biter-Battles"]
     build:
-      context: .
+      context: ../
+      dockerfile: docker/Dockerfile.fbb-test
       args:
         # Check buildinfo.json for supported versions and SHAs
         # https://github.com/factoriotools/factorio-docker/blob/master/buildinfo.json
-        - VERSION=1.1.91
-        - SHA256=2288b21afb1d96aa06712a2ae2e31b9c45f0aa4a2e9dec041125d874f0781f6d
+        - VERSION=1.1.100
+        - SHA256=9850dd146f93ee4da8ba06316591888860a4058c8548409cdfb5dd693abcd834
+        - BASETAG=1.1.100-base
     ports:
       - "34197:34197/udp"
       - "27015:27015/tcp"
-    volumes:
-      - /opt/factorio:/factorio
+    # volumes:
+    #   - /opt/factorio:/factorio
 #    environment:
 #      - PUID=1000
 #      - PGID=1000

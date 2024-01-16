@@ -6,15 +6,15 @@
 - [ ] Automate zipping and moving of main mod to factorio
 
 - [ ] Automate building (zipping) of main mod
-- [ ] Simplify python script
-- [ ] Confirm python script works
+- [x] Simplify python script
+- [x] Confirm python script works
 
-- [ ] Finish example scenario implementaiton
-- [ ] Confirm example scenario works in factorio
+- [x] Finish example scenario implementation
+- [x] Confirm example scenario works in factorio
 
 - [ ] Confirm global/test saving works
 
 - [ ] Consider saving state somehow?
-- [ ] Automate github actions buliding of docker image
+- [ ] Automate github actions building of docker image
 - [ ] Create GHA test plugin
 

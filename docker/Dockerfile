@@ -69,3 +69,14 @@ VOLUME /factorio
 EXPOSE $PORT/udp $RCON_PORT/tcp
 # ENTRYPOINT ["/docker-entrypoint.sh"]
 
+RUN apt-get -q update && apt-get install -y wget git nodejs
+RUN mkdir /opt/luals && cd /opt/luals \
+	&& wget https://github.com/LuaLS/lua-language-server/releases/download/3.7.4/lua-language-server-3.7.4-linux-x64.tar.gz \
+	&& tar xvf lua-language-server-3.7.4-linux-x64.tar.gz
+ENV PATH="${PATH}:/opt/luals/bin"
+RUN mkdir -p /opt/ \
+	&& git clone --depth 1 --branch 1.1.39 https://github.com/justarandomgeek/vscode-factoriomod-debug.git /opt/vscode-factoriomod-debug \
+	&& mkdir /opt/factorio-api-gen \
+	&& cd /opt/factorio-api-gen \
+	&& npm i factoriomod-debug
+	# && ./node_modules/.bin/fmtk sumneko-3rd -d runtime-api.json -p prototype-api.json
