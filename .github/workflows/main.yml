@@ -1,6 +1,4 @@
-
 name: Factorio Mod and Scenario Testing
-
 on:
   push:
     branches:
@@ -8,61 +6,41 @@ on:
   pull_request:
     branches:
       - master
-
 jobs:
   test:
     strategy:
       matrix:
-        version_and_sha: [{version: 1.1.101,sha256: 0688a6f615a87bf73d3f46b53dc423ee37cad3fc4412723f3d7450aed1638392},{version: 1.1.100,sha256: 9850dd146f93ee4da8ba06316591888860a4058c8548409cdfb5dd693abcd834}]
+        version_and_sha: [{version: 1.1.104, sha256: 8e13353ab23d57989db7b06594411d30885de1a923f3a989d12749c1abc01583}, {version: 1.1.101, sha256: 0688a6f615a87bf73d3f46b53dc423ee37cad3fc4412723f3d7450aed1638392}, {version: 1.1.100, sha256: 9850dd146f93ee4da8ba06316591888860a4058c8548409cdfb5dd693abcd834}]
     runs-on: ubuntu-latest
     permissions:
       id-token: write
     environment:
       name: cicd
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-
-    - name: Login to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: danpfuw
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-    # TODO only on tag
-    - name: Build and push base
-      uses: docker/build-push-action@v5
-      with:
-        file: docker/Dockerfile
-        tags: danpfuw/factorio-check:${{ matrix.version_and_sha.version }}-base
-        build-args: |
-          VERSION=${{ matrix.version_and_sha.version }}
-          SHA256=${{ matrix.version_and_sha.sha256 }}
-        push: true
-
-    - name: Build and push mod test
-      uses: docker/build-push-action@v5
-      with:
-        file: docker/Dockerfile.mod-test
-        tags: danpfuw/factorio-check:${{ matrix.version_and_sha.version }}-simple-mod
-        build-args: |
-          BASETAG=${{ matrix.version_and_sha.version }}-base
-        load: true
-
-    - name: Build and push scenario test
-      uses: docker/build-push-action@v5
-      with:
-        file: docker/Dockerfile.scenario-test
-        tags: danpfuw/factorio-check:${{ matrix.version_and_sha.version }}-simple-scenario
-        build-args: |
-          BASETAG=${{ matrix.version_and_sha.version }}-base
-        load: true
-
-    - name: Build and run simple-mod tests
-      run: docker run --rm --entrypoint run-factorio-test -e LOGLEVEL=DEBUG -t danpfuw/factorio-check:${{ matrix.version_and_sha.version }}-simple-mod --factorio_executable /opt/factorio/bin/x64/factorio
-
-    - name: Build and run simple-scenario tests
-      run: docker run --rm --entrypoint run-factorio-test -e LOGLEVEL=DEBUG -t danpfuw/factorio-check:${{ matrix.version_and_sha.version }}-simple-scenario --factorio_executable /opt/factorio/bin/x64/factorio
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: danpfuw
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      # TODO only on tag
+      - name: Build and push base
+        uses: docker/build-push-action@v5
+        with:
+          file: docker/Dockerfile
+          tags: danpfuw/factorio-check:${{ matrix.version_and_sha.version }}
+          build-args: |
+            VERSION=${{ matrix.version_and_sha.version }}
+            SHA256=${{ matrix.version_and_sha.sha256 }}
+          push: true
+      - name: Build and run simple-mod linting
+        run: docker run --rm --entrypoint run-factorio-test -e LOGLEVEL=DEBUG --entrypoint /usr/local/bin/lint_entrypoint.sh -t danpfuw/factorio-check:${{ matrix.version_and_sha.version }} /opt/factorio-check-examples/simple-scenario
+      - name: Build and run simple-scenario linting
+        run: docker run --rm --entrypoint run-factorio-test -e LOGLEVEL=DEBUG -t danpfuw/factorio-check:${{ matrix.version_and_sha.version }} --factorio_executable /opt/factorio/bin/x64/factorio
+      - name: Build and run simple-mod tests
+        run: docker run --rm --entrypoint run-factorio-test -e LOGLEVEL=DEBUG -t danpfuw/factorio-check:${{ matrix.version_and_sha.version }} /opt/factorio-check-examples/simple-mod
+      - name: Build and run simple-scenario tests
+        run: docker run --rm --entrypoint run-factorio-test -e LOGLEVEL=DEBUG -t danpfuw/factorio-check:${{ matrix.version_and_sha.version }} --factorio_executable /opt/factorio/bin/x64/factorio

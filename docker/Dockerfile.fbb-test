@@ -2,4 +2,4 @@ ARG BASETAG
 FROM danpfuw/factorio-check:${BASETAG}
 
 ADD src/lua/Factorio-Biter-Battles /opt/factorio/scenarios/Factorio-Biter-Battles
-RUN echo '["DrButtons"]' > server-adminlist.json
+RUN echo '["danpf"]' > server-adminlist.json

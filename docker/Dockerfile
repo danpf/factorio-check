@@ -113,7 +113,7 @@ RUN <<EOF cat >> /opt/luals/lua-language-server/log/trusted
 /opt/vscode-factoriomod-debug/luals-addon/factorio/plugin.lua
 EOF
 
-RUN <<EOF cat >> /usr/local/bin/entrypoint.sh
+RUN <<EOF cat >> /usr/local/bin/lint_entrypoint.sh
 #!/bin/bash
 
 if [ "\$#" -ne 1 ]; then
@@ -139,7 +139,7 @@ if [ -f \$CHECK_FILE ]; then
 fi
 EOF
 
-RUN chmod +x /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/lint_entrypoint.sh
 
 COPY src/python/factorio_check /tmp/factorio_check
 RUN python3 -m venv /opt/venv \
