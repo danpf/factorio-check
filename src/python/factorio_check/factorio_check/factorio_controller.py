@@ -54,7 +54,6 @@ class FactorioController:
                 log.info(copy_to_path)
                 shutil.copytree(pth, copy_path)
 
-
     def terminate_game(self) -> None:
         if self.factorio_process is not None:
             if self.factorio_process.poll() is None:
@@ -150,10 +149,16 @@ def parse_args(args: list[str]) -> argparse.Namespace:
         required=True,
     )
     parser.add_argument(
-        "--factorio_mods_dir", type=Path, help="Path to the factorio mods directory", default=Path("/opt/factorio/mods")
+        "--factorio_mods_dir",
+        type=Path,
+        help="Path to the factorio mods directory",
+        default=Path("/opt/factorio/mods"),
     )
     parser.add_argument(
-        "--factorio_scenario_dir", type=Path, help="Path to the factorio scenario directory", default=Path("/opt/factorio/scenarios")
+        "--factorio_scenario_dir",
+        type=Path,
+        help="Path to the factorio scenario directory",
+        default=Path("/opt/factorio/scenarios"),
     )
     parser.add_argument(
         "--factorio_scenario",
@@ -165,10 +170,12 @@ def parse_args(args: list[str]) -> argparse.Namespace:
         "--factorio_scenario_copy_dirs",
         type=Path,
         nargs="+",
+        default=[],
         help="Path(s) to copy to the factorio scenario directory",
     )
     parser.add_argument(
         "--factorio_mods_copy_dirs",
+        default=[],
         type=Path,
         nargs="+",
         help="Path(s) to copy to the factorio mods directory",
