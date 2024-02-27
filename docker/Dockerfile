@@ -36,6 +36,10 @@ RUN set -ox pipefail \
         echo "build-arg SHA256 is required" \
         && exit 1; \
     fi \
+	&& mkdir -p $SCENARIOS \
+	&& mkdir -p $MODS \
+	&& mkdir -p $SAVES \
+    && mkdir -p $SCRIPTOUTPUT \
     && archive="/tmp/factorio_headless_x64_$VERSION.tar.xz" \
     && mkdir -p /opt /factorio \
     && apt-get -q update \
@@ -48,7 +52,9 @@ RUN set -ox pipefail \
     && chmod ugo=rwx /opt/factorio \
     && rm "$archive" \
     && ln -s "$SCENARIOS" /opt/factorio/scenarios \
+    && ln -s "$MODS" /opt/factorio/mods \
     && ln -s "$SAVES" /opt/factorio/saves \
+    && ln -s "$SCRIPTOUTPUT" /opt/factorio/script-output \
     && mkdir -p /opt/factorio/config/ \
     && addgroup --system --gid "$PGID" "$GROUP" \
     && adduser --system --uid "$PUID" --gid "$PGID" --no-create-home --disabled-password --shell /bin/sh "$USER" \
