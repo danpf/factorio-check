@@ -19,7 +19,7 @@ class FactorioController:
     factorio_mods_dir: Path | None
     factorio_process: subprocess.Popen | None = None
     testing_logs: list[str] = field(default_factory=list)
-    max_seconds: int = 60
+    max_seconds: int = 300
     start_time: int = 0
 
     def launch_game(self) -> None:
@@ -105,7 +105,9 @@ class FactorioController:
                     failed_tests = True
         return failed_tests
 
-    def build_args(self, factorio_executable: Path, factorio_mods_dir: Path | None) -> list[str]:
+    def build_args(
+        self, factorio_executable: Path, factorio_mods_dir: Path | None
+    ) -> list[str]:
         args = [
             str(factorio_executable),
             "--start-server-load-scenario",
@@ -120,8 +122,21 @@ class FactorioController:
 
 def parse_args(args: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--factorio_executable", type=Path, help="thing1", required=True)
-    parser.add_argument("--factorio_mods_dir", type=Path, help="thing2")
+    parser.add_argument(
+        "--factorio_executable",
+        type=Path,
+        help="Path to the factorio executable",
+        required=True,
+    )
+    parser.add_argument(
+        "--factorio_mods_dir", type=Path, help="Path to the factorio mods directory"
+    )
+    parser.add_argument(
+        "--max_test_seconds",
+        type=int,
+        help="Maximum number of seconds to allow tests to take",
+        default=300,
+    )
     return parser.parse_args(args)
 
 
@@ -130,6 +145,7 @@ def main_cli() -> None:
     fc = FactorioController(
         factorio_executable=args.factorio_executable,
         factorio_mods_dir=args.factorio_mods_dir,
+        max_seconds=args.max_test_seconds,
     )
     fc.launch_game()
     fc.execute_unit_tests()
