@@ -36,6 +36,7 @@ jobs:
             VERSION=${{ matrix.version_and_sha.version }}
             SHA256=${{ matrix.version_and_sha.sha256 }}
           push: true
+          load: true
       - name: Build and run simple-mod linting
         run: docker run --rm --entrypoint run-factorio-test -e LOGLEVEL=DEBUG --entrypoint /usr/local/bin/lint_entrypoint.sh -t danpfuw/factorio-check:${{ matrix.version_and_sha.version }} /opt/factorio-check-examples/simple-scenario
       - name: Build and run simple-scenario linting
