@@ -8,7 +8,7 @@ function Public.bar()
 	return "bar"
 end
 
-function Public.foo_bar()
+function Public.foobar()
 	return Public.foo() .. Public.bar()
 end
 

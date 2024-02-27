@@ -14,9 +14,9 @@ script.on_event(defines.events.on_player_changed_position, function(event)
 end)
 
 if script.active_mods["factorio-check"] then
-	local tests = require("tests.thing")
+	local tests = require("tests.main")
 	script.on_event(defines.events.on_tick, function()
-		if game.tick == 60 * 5 then
+		if game.tick == 60 * 10 then
 			tests.tests_entrypoint()
 		end
 	end)
