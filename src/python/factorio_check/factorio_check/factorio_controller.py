@@ -2,6 +2,7 @@ import argparse
 from dataclasses import dataclass, field
 import logging
 import os
+import shutil
 from pathlib import Path
 import time
 import subprocess
@@ -17,12 +18,17 @@ log.setLevel(os.environ.get("LOGLEVEL", "WARNING").upper())
 class FactorioController:
     factorio_executable: Path
     factorio_mods_dir: Path | None
+    factorio_scenario_dir: Path | None
+    factorio_scenario: str
+    factorio_scenario_copy_dirs: list[Path]
+    factorio_mods_copy_dirs: list[Path]
     factorio_process: subprocess.Popen | None = None
     testing_logs: list[str] = field(default_factory=list)
     max_seconds: int = 300
     start_time: int = 0
 
     def launch_game(self) -> None:
+        self.pre_copy_dirs()
         args = self.build_args(self.factorio_executable, self.factorio_mods_dir)
         self.start_time = int(time.time())
         self.factorio_process = subprocess.Popen(
@@ -33,6 +39,21 @@ class FactorioController:
             stderr=subprocess.STDOUT,
         )
         log.info(f"Started factorio process {self.factorio_process} {' '.join(args)}")
+
+    def pre_copy_dirs(self) -> None:
+        if self.factorio_scenario_dir:
+            for pth in self.factorio_scenario_copy_dirs:
+                copy_path = self.factorio_scenario_dir / pth.name
+                copy_to_path = f"cp {pth} {copy_path}"
+                log.info(copy_to_path)
+                shutil.copytree(pth, copy_path)
+        if self.factorio_mods_dir:
+            for pth in self.factorio_mods_copy_dirs:
+                copy_path = self.factorio_mods_dir / pth.name
+                copy_to_path = f"cp {pth} {copy_path}"
+                log.info(copy_to_path)
+                shutil.copytree(pth, copy_path)
+
 
     def terminate_game(self) -> None:
         if self.factorio_process is not None:
@@ -111,7 +132,7 @@ class FactorioController:
         args = [
             str(factorio_executable),
             "--start-server-load-scenario",
-            "base/freeplay",
+            self.factorio_scenario if self.factorio_scenario else "base/freeplay",
         ]
         if factorio_mods_dir is not None:
             args.append("--mod-directory")
@@ -129,7 +150,28 @@ def parse_args(args: list[str]) -> argparse.Namespace:
         required=True,
     )
     parser.add_argument(
-        "--factorio_mods_dir", type=Path, help="Path to the factorio mods directory"
+        "--factorio_mods_dir", type=Path, help="Path to the factorio mods directory", default=Path("/opt/factorio/mods")
+    )
+    parser.add_argument(
+        "--factorio_scenario_dir", type=Path, help="Path to the factorio scenario directory", default=Path("/opt/factorio/scenarios")
+    )
+    parser.add_argument(
+        "--factorio_scenario",
+        type=str,
+        help="Your factorio scenario to run",
+        default="",
+    )
+    parser.add_argument(
+        "--factorio_scenario_copy_dirs",
+        type=Path,
+        nargs="+",
+        help="Path(s) to copy to the factorio scenario directory",
+    )
+    parser.add_argument(
+        "--factorio_mods_copy_dirs",
+        type=Path,
+        nargs="+",
+        help="Path(s) to copy to the factorio mods directory",
     )
     parser.add_argument(
         "--max_test_seconds",
@@ -145,6 +187,10 @@ def main_cli() -> None:
     fc = FactorioController(
         factorio_executable=args.factorio_executable,
         factorio_mods_dir=args.factorio_mods_dir,
+        factorio_scenario_dir=args.factorio_scenario_dir,
+        factorio_scenario_copy_dirs=args.factorio_scenario_copy_dirs,
+        factorio_mods_copy_dirs=args.factorio_mods_copy_dirs,
+        factorio_scenario=args.factorio_scenario,
         max_seconds=args.max_test_seconds,
     )
     fc.launch_game()

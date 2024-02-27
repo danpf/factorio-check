@@ -36,14 +36,40 @@ jobs:
             VERSION=${{ matrix.version_and_sha.version }}
             SHA256=${{ matrix.version_and_sha.sha256 }}
           load: true
-      - name: Build and run simple-mod linting
-        run: docker run --rm --entrypoint run-factorio-test -e LOGLEVEL=DEBUG --entrypoint /usr/local/bin/lint_entrypoint.sh -t danpfuw/factorio-check:${{ matrix.version_and_sha.version }} /opt/factorio-check-examples/simple-scenario
-      - name: Build and run simple-scenario linting
-        run: docker run --rm --entrypoint run-factorio-test -e LOGLEVEL=DEBUG -t danpfuw/factorio-check:${{ matrix.version_and_sha.version }} --factorio_executable /opt/factorio/bin/x64/factorio
-      - name: Build and run simple-mod tests
-        run: docker run --rm --entrypoint run-factorio-test -e LOGLEVEL=DEBUG -t danpfuw/factorio-check:${{ matrix.version_and_sha.version }} /opt/factorio-check-examples/simple-mod
-      - name: Build and run simple-scenario tests
-        run: docker run --rm --entrypoint run-factorio-test -e LOGLEVEL=DEBUG -t danpfuw/factorio-check:${{ matrix.version_and_sha.version }} --factorio_executable /opt/factorio/bin/x64/factorio
+      - name: Run simple-scenario linting
+        run: |
+          docker run --rm \
+          --entrypoint run-factorio-test \
+          -e LOGLEVEL=DEBUG \
+          --entrypoint /usr/local/bin/lint_entrypoint.sh \
+          -t danpfuw/factorio-check:${{ matrix.version_and_sha.version }} \
+          /opt/factorio-check-examples/simple-scenario
+      - name: Run simple-scenario tests
+        run: |
+          docker run --rm \
+          --entrypoint run-factorio-test \
+          -e LOGLEVEL=DEBUG \
+          -t danpfuw/factorio-check:${{ matrix.version_and_sha.version }} \
+          --factorio_executable /opt/factorio/bin/x64/factorio \
+          --factorio_scenario simple-scenario \
+          --factorio_scenario_copy_dirs /opt/factorio-check-examples/simple-scenario
+
+      - name: Run simple-mod linting
+        run: |
+          docker run --rm \
+          --entrypoint run-factorio-test \
+          -e LOGLEVEL=DEBUG \
+          --entrypoint /usr/local/bin/lint_entrypoint.sh \
+          -t danpfuw/factorio-check:${{ matrix.version_and_sha.version }} \
+          /opt/factorio-check-examples/simple-mod
+      - name: Run simple-mod tests
+        run: |
+          docker run --rm \
+          --entrypoint run-factorio-test \
+          -e LOGLEVEL=DEBUG \
+          -t danpfuw/factorio-check:${{ matrix.version_and_sha.version }} \
+          --factorio_executable /opt/factorio/bin/x64/factorio \
+          --factorio_mods_copy_dirs /opt/factorio-check-examples/simple-mod
       - name: Build and push base
         uses: docker/build-push-action@v5
         with:
