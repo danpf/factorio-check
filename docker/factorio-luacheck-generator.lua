@@ -1,4 +1,4 @@
-# https://raw.githubusercontent.com/Nexela/Factorio-luacheckrc/master/api-parse.lua
+-- https://raw.githubusercontent.com/Nexela/Factorio-luacheckrc/master/api-parse.lua
 local lunajson = require("lunajson")
 local lfs = require("lfs")
 local lxsh = require("lxsh")

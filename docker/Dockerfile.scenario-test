@@ -1,4 +1,3 @@
 ARG BASETAG
 FROM danpfuw/factorio-check:${BASETAG}
 
-ADD src/lua/simple-scenario /opt/factorio/scenarios/simple-scenario
