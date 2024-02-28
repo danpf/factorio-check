@@ -52,7 +52,7 @@ scenario is used.
 
 For more information, you can find the code [HERE](src/python/factorio_check).
 
-**The library is a modification of the python code from [Angels Mods Unit-test script](https://github.com/Arch666Angel/mods/blob/master/angelsdev-unit-test/python/factorio_controller.py)**
+**The library is inspired by the python code from [Angels Mods Unit-test script](https://github.com/Arch666Angel/mods/blob/master/angelsdev-unit-test/python/factorio_controller.py)**
 **Thank you to Angel for the open-source library**
 
 ---
