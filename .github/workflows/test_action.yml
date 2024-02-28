@@ -12,6 +12,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Run action on simple-scenario
+        uses: ./
+        with:
+          directory: ${{ github.workspace }}/src/lua/simple-scenario
       - name: Double check something
         run: |
           pwd
@@ -19,19 +23,15 @@ jobs:
           ls
           echo "ls .."
           ls ..
-      - name: Run action on simple-scenario
-        uses: ./action.yml
-        with:
-          directory: ${{ github.workspace }}/src/lua/simple-scenario
       - name: Run action on simple-mod
-        uses: ./action.yml
+        uses: ./
         with:
           directory: ${{ github.workspace }}/src/lua/simple-mod
       - name: Replace text in file
         run: |
           sed -i 's/player_index/player_indexxx/g' ${{ github.workspace }}/src/lua/simple-scenario/control.lua
       - name: Run action on simple-scenario -- Expect failure
-        uses: ./action.yml
+        uses: ./
         with:
           directory: ${{ github.workspace }}/src/lua/simple-scenario
         id: should_fail_step
