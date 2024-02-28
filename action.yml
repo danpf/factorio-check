@@ -16,7 +16,7 @@ runs:
         echo "${{ github.workspace }}"
       shell: bash
 
-    - run: docker build -t factorio-check-action "${{ github.workspace }}" -f "${{ github.workspace }}"/docker/Dockerfile
+    - run: docker build --build-arg SHA256=8e13353ab23d57989db7b06594411d30885de1a923f3a989d12749c1abc01583 --build-arg VERSION=1.1.104 -t factorio-check-action "${{ github.workspace }}" -f "${{ github.workspace }}"/docker/Dockerfile
       shell: bash
 
     - run: docker run --rm -v "${{ inputs.directory }}":"${{ inputs.directory }}":ro factorio-check-action "${{ inputs.directory }}"
