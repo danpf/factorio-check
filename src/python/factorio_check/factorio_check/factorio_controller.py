@@ -44,12 +44,16 @@ class FactorioController:
         if self.factorio_scenario_dir:
             for pth in self.factorio_scenario_copy_dirs:
                 copy_path = self.factorio_scenario_dir / pth.name
+                if copy_path.is_dir():
+                    shutil.rmtree(copy_path)
                 copy_to_path = f"cp {pth} {copy_path}"
                 log.info(copy_to_path)
                 shutil.copytree(pth, copy_path)
         if self.factorio_mods_dir:
             for pth in self.factorio_mods_copy_dirs:
                 copy_path = self.factorio_mods_dir / pth.name
+                if copy_path.is_dir():
+                    shutil.rmtree(copy_path)
                 copy_to_path = f"cp {pth} {copy_path}"
                 log.info(copy_to_path)
                 shutil.copytree(pth, copy_path)

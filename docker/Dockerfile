@@ -43,7 +43,7 @@ RUN set -ox pipefail \
     && archive="/tmp/factorio_headless_x64_$VERSION.tar.xz" \
     && mkdir -p /opt /factorio \
     && apt-get -q update \
-    && DEBIAN_FRONTEND=noninteractive apt-get -qy install build-essential file ca-certificates curl jq pwgen xz-utils python3 python3-pip python3-venv vim wget git nodejs npm ninja-build --no-install-recommends \
+    && DEBIAN_FRONTEND=noninteractive apt-get -qy install build-essential file ca-certificates curl jq pwgen xz-utils python3 python3-pip python3-venv vim wget git nodejs npm ninja-build \
     && rm -rf /var/lib/apt/lists/* \
     && curl -sSL "https://www.factorio.com/get-download/$VERSION/headless/linux64" -o "$archive" --retry $CURL_RETRIES\
     && echo "$SHA256  $archive" | sha256sum -c \

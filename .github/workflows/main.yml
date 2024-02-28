@@ -39,7 +39,6 @@ jobs:
       - name: Run simple-scenario linting
         run: |
           docker run --rm \
-          --entrypoint run-factorio-test \
           -e LOGLEVEL=DEBUG \
           --entrypoint /usr/local/bin/lint-entrypoint.sh \
           -t danpfuw/factorio-check:${{ matrix.version_and_sha.version }} \
@@ -47,8 +46,8 @@ jobs:
       - name: Run simple-scenario tests
         run: |
           docker run --rm \
-          --entrypoint run-factorio-test \
           -e LOGLEVEL=DEBUG \
+          --entrypoint run-factorio-test \
           -t danpfuw/factorio-check:${{ matrix.version_and_sha.version }} \
           --factorio_executable /opt/factorio/bin/x64/factorio \
           --factorio_scenario simple-scenario \
@@ -57,7 +56,6 @@ jobs:
       - name: Run simple-mod linting
         run: |
           docker run --rm \
-          --entrypoint run-factorio-test \
           -e LOGLEVEL=DEBUG \
           --entrypoint /usr/local/bin/lint-entrypoint.sh \
           -t danpfuw/factorio-check:${{ matrix.version_and_sha.version }} \
@@ -65,8 +63,8 @@ jobs:
       - name: Run simple-mod tests
         run: |
           docker run --rm \
-          --entrypoint run-factorio-test \
           -e LOGLEVEL=DEBUG \
+          --entrypoint run-factorio-test \
           -t danpfuw/factorio-check:${{ matrix.version_and_sha.version }} \
           --factorio_executable /opt/factorio/bin/x64/factorio \
           --factorio_mods_copy_dirs /opt/factorio-check-examples/simple-mod
