@@ -161,9 +161,5 @@ your work.
 **Thank you to the factoriotools team for their creation and maintenance of this open source library**
 **Thank you to justarandomgeek for their [vscode-factoriomod-debug](https://github.com/justarandomgeek/vscode-factoriomod-debug) library**
 
-
-## Contributing
-Guidelines for contributing to the mod.
-
 ## License
 MIT License. See the LICENSE file for details.
