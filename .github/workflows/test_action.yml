@@ -12,6 +12,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Double check something
+        run: |
+          pwd
+          echo "ls"
+          ls
+          echo "ls .."
+          ls ..
       - name: Run action on simple-scenario
         uses: ./action.yml
         with:
