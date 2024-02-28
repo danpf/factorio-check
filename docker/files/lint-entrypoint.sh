@@ -13,11 +13,10 @@ if [ ! -d "$TARGET_DIR" ]; then
 	exit 1
 fi
 
-cp /opt/factorio/luarc.json "$TARGET_DIR/.luarc.json"
-cd "$TARGET_DIR" || exit 1
-lua-language-server --check .
+lua-language-server --check "$TARGET_DIR" --configpath /opt/factorio/luarc.json > /dev/null
 CHECK_FILE="/opt/luals/lua-language-server/log/check.json"
 if [ -f $CHECK_FILE ]; then
-	cat $CHECK_FILE
+	jq -r '. as $root | to_entries[] | .key as $filename | .value | unique[] | "\($filename) code: \(.code), message: \(.message), severity: \(.severity), source: \(.source), line:char-range: \(.range.start.line):\(.range.start.character)-\(.range.end.line):\(.range.end.character)"' $CHECK_FILE
 	exit 1
 fi
+echo "Linting complete: No errors found"

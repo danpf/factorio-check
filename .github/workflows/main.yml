@@ -40,7 +40,7 @@ jobs:
         run: |
           docker run --rm \
           -e LOGLEVEL=DEBUG \
-          --entrypoint /usr/local/bin/lint-entrypoint.sh \
+          --entrypoint lint-entrypoint.sh \
           -t danpfuw/factorio-check:${{ matrix.version_and_sha.version }} \
           /opt/factorio-check-examples/simple-scenario
       - name: Run simple-scenario tests
@@ -57,7 +57,7 @@ jobs:
         run: |
           docker run --rm \
           -e LOGLEVEL=DEBUG \
-          --entrypoint /usr/local/bin/lint-entrypoint.sh \
+          --entrypoint lint-entrypoint.sh \
           -t danpfuw/factorio-check:${{ matrix.version_and_sha.version }} \
           /opt/factorio-check-examples/simple-mod
       - name: Run simple-mod tests

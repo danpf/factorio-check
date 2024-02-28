@@ -1,5 +1,5 @@
 
-# Factorio Testing Mod
+# Factorio Testing Mod: factorio-check
 
 ## Description
 This is a mod that enables unit testing for Factorio mods and scenarios.
@@ -11,6 +11,7 @@ This repository contains 3 main tools that you may want to use:
 * factorio-check factorio mod
 * factorio-check Dockerfile
 
+---
 #### Python library
 
 The python library is essentially a factorio executable wrapper that watches,
@@ -51,8 +52,10 @@ scenario is used.
 
 For more information, you can find the code [HERE](src/python/factorio_check).
 
-**The library is a modification of the python code from [Angels Mods Unit-test script](https://github.com/Arch666Angel/mods/blob/master/angelsdev-unit-test/python/factorio_controller.py), TY to Angel for the open-source library**
+**The library is a modification of the python code from [Angels Mods Unit-test script](https://github.com/Arch666Angel/mods/blob/master/angelsdev-unit-test/python/factorio_controller.py)**
+**Thank you to Angel for the open-source library**
 
+---
 #### Factorio mod
 
 This Lua script provides a basic lua test framework, designed to facilitate the creation and execution
@@ -98,6 +101,7 @@ if script.active_mods["factorio-check"] then
 end
 ```
 
+---
 #### Factorio Docker Image
 
 This image is the core of this CI toolkit.  It integrates all of the aforementioned tools, and provides a modular interface
@@ -109,34 +113,53 @@ lua-language-server addon installed.  This lua-language-server addon enables you
 if integrated with CI, can provide insight into areas where your code might be missing edge-case handling, as well as 
 
 
-To run on the local scenario you are developing
+---
+#### Factorio Docker Image: Static Analysis
+To run static analysis on the local scenario, or mod you are developing, simply run:
 ```bash
-docker run --rm \
-    -e LOGLEVEL=DEBUG \
-    -v "$(pwd)":"$(pwd)" \
+$ docker run --rm \
+    -v "$(pwd)":"$(pwd):ro" \
     --entrypoint /usr/local/bin/lint-entrypoint.sh \
     -t danpfuw/factorio-check:${{ matrix.version_and_sha.version }} \
     "$(pwd)"
+> Diagnosis completed, no problems found
+
+# or with errors:
+$ docker run --rm \
+    -v "$(pwd)":"$(pwd):ro" \
+    --entrypoint lint-entrypoint.sh \
+    -t danpfuw/factorio-check:latest \
+    "$(pwd)"
+> Diagnosis complete, 1 problems found, see /opt/luals/lua-language-server/log/check.json
+> {
+>     "file:///Users/martha/git/factorio-docker/src/lua/simple-scenario/./control.lua": [
+>         {
+>             "code": "undefined-field",
+>             "message": "Undefined field `player_indexx`.",
+>             "range": {
+>                 "end": {
+>                     "character": 51,
+>                     "line": 6
+>                 },
+>                 "start": {
+>                     "character": 38,
+>                     "line": 6
+>                 }
+>             },
+>             "severity": 2,
+>             "source": "Lua Diagnostics."
+>         }
+>     ]
+> }
 ```
 
-
-
-
+The formatting isn't great, and sometimes there may be duplicates, but it
+should at least provide some insight into where you might be able to improve
+your work.
 
 **This is heavily based on the work at [factoriotools/factorio-docker](https://github.com/factoriotools/factorio-docker)**
 **Thank you to the factoriotools team for their creation and maintenance of this open source library**
-
-### How it works
-
-Unit testing is only evaluated if the factorio-check library
-
-## Usage
-
-
-Instructions on how to use the mod for testing.
-
-## /Integration
-
+**Thank you to justarandomgeek for their [vscode-factoriomod-debug](https://github.com/justarandomgeek/vscode-factoriomod-debug) library**
 
 
 ## Contributing
