@@ -1,0 +1,26 @@
+{
+	"misc": {
+		"parameters": ["--develop=true"]
+	},
+	"diagnostics": {
+		"libraryFiles": "Disable"
+	},
+	"workspace": {
+		"checkThirdParty": false,
+		"preloadFileSize": 1000,
+		"maxPreload": 2000,
+		"library": [
+			"/opt/factorio/data",
+			"/opt/factorio-api-gen",
+			"/opt/vscode-factoriomod-debug/luals-addon/factorio/factorio-plugin"
+		],
+		"ignoreDir": [
+			"/opt/vscode-factoriomod-debug/.vscode",
+			"/opt/vscode-factoriomod-debug/test/factorio",
+			"/opt/vscode-factoriomod-debug/luals-addon/factorio/library"
+		]
+	},
+	"runtime": {
+		"plugin": "/opt/vscode-factoriomod-debug/luals-addon/factorio/plugin.lua"
+	}
+}
