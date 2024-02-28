@@ -7,7 +7,17 @@ inputs:
     required: false
     default: "${{ github.workspace }}"
 runs:
-  using: "docker"
-  image: "docker/Dockerfile"
-  args:
-    - ${{ inputs.directory }}
+  using: "composite"
+  steps:
+    - run: |
+        pwd
+        echo "hi"
+        ls
+        echo "${{ github.workspace }}"
+      shell: bash
+
+    - run: docker build -t factorio-check-action "${{ github.workspace }}" -f "${{ github.workspace }}"/docker/Dockerfile
+      shell: bash
+
+    - run: docker run --rm -v "${{ inputs.directory }}":"${{ inputs.directory }}":ro factorio-check-action "${{ inputs.directory }}"
+      shell: bash
