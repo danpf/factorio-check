@@ -1,0 +1,13 @@
+name: "Factorio-check"
+description: "Linting for factorio scenarios and mods."
+author: "Danny Farrell <16297104+danpf@users.noreply.github.com>"
+inputs:
+  directory:
+    description: "Directory to run the linting."
+    required: false
+    default: "${{ github.workspace }}"
+runs:
+  using: "docker"
+  image: "docker/Dockerfile"
+  args:
+    - ${{ inputs.directory }}

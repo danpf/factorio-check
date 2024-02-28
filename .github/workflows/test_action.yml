@@ -1,0 +1,36 @@
+name: Test the factorio-check github action
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Run action on simple-scenario
+        uses: ./action.yml
+        with:
+          directory: ${{ github.workspace }}/src/lua/simple-scenario
+      - name: Run action on simple-mod
+        uses: ./action.yml
+        with:
+          directory: ${{ github.workspace }}/src/lua/simple-mod
+      - name: Replace text in file
+        run: |
+          sed -i 's/player_index/player_indexxx/g' ${{ github.workspace }}/src/lua/simple-scenario/control.lua
+      - name: Run action on simple-scenario -- Expect failure
+        uses: ./action.yml
+        with:
+          directory: ${{ github.workspace }}/src/lua/simple-scenario
+        id: should_fail_step
+        continue-on-error: true
+      - name: Check Failure of modified simple-scenario
+        if: steps.fail_step.outcome == 'success'
+        run: |
+          echo "The modified simple-scenario linting succeeded with no errors, which is not expected. Failing this step."
+          exit 1
