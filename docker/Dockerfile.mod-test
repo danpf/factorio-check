@@ -1,4 +1,0 @@
-ARG BASETAG
-FROM danpfuw/factorio-check:${BASETAG}
-
-ADD src/lua/simple-mod /opt/factorio/mods/simple-mod
