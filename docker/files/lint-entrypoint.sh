@@ -13,7 +13,12 @@ if [ ! -d "$TARGET_DIR" ]; then
 	exit 1
 fi
 
-lua-language-server --check "$TARGET_DIR" --configpath /opt/factorio/luarc.json || echo "lua-language-server command failed" && exit 1
+lua-language-server --check "$TARGET_DIR" --configpath /opt/factorio/luarc.json
+if [ $? -ne 0 ]; then
+	echo "lua-language-server command failed."
+	exit 1
+fi
+
 CHECK_FILE="/opt/luals/lua-language-server/log/check.json"
 if [ -f $CHECK_FILE ]; then
 	echo "Linting complete: Errors found!"
