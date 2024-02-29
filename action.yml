@@ -36,5 +36,5 @@ runs:
     - run: |
         USER_ID=$(id -u)
         GROUP_ID=$(id -g)
-        docker run --user ${USER_ID}:${GROUP_ID} --rm -v "${{ inputs.directory }}":"${{ inputs.directory }}":ro factorio-check-action "${{ inputs.directory }}"
+        docker run --user ${USER_ID}:${GROUP_ID} --entrypoint lint-entrypoint.sh --rm -v "${{ inputs.directory }}":"${{ inputs.directory }}":ro factorio-check-action "${{ inputs.directory }}"
       shell: bash
