@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - master
+    tags:
+      - '*'
   pull_request:
     branches:
       - master
@@ -72,7 +74,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           file: docker/Dockerfile
-          tags: danpfuw/factorio-check:${{ matrix.version_and_sha.version }}
+          tags: danpfuw/factorio-check:${{ github.ref_name }}_${{ matrix.version_and_sha.version }}
           build-args: |
             VERSION=${{ matrix.version_and_sha.version }}
             SHA256=${{ matrix.version_and_sha.sha256 }}
