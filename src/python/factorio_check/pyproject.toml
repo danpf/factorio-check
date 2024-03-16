@@ -6,7 +6,7 @@ authors = [
   { name = "Danny Farrell", email = "16297104+danpf@users.noreply.github.com" },
 ]
 readme = "README.md"
-license = {file = "LICENSE.txt"}
+license = {file = "LICENSE"}
 classifiers = [
   "Development Status :: 4 - Beta",
   "Programming Language :: Python"
