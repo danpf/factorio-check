@@ -161,6 +161,7 @@ To run static analysis on the local scenario, or mod you are developing, simply 
 $ docker run --rm \
     -v "$(pwd)":"$(pwd):ro" \
     -e MODE=LINT \
+    -e TARGET_PATH="$(pwd)"
     -t danpfuw/factorio-check:0.0.2_1.1.104 \
     "$(pwd)"
 > Diagnosis completed, no problems found

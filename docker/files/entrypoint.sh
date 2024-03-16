@@ -17,7 +17,7 @@ if [ "$MODE" = "LINT" ]; then
 		echo "TARGET_PATH environment variable is not set."
 		exit 1
 	fi
-	if [ -v "$LINT_FORMATTING" ]; then
+	if [ -n "$LINT_FORMATTING" ]; then
 		echo "Including formatting during linting."
 		sed -i 's/"libraryFiles": "Disable"/"libraryFiles": "Disable", "neededFileStatus": {"codestyle-check": "Any"}/g' /opt/factorio/luarc.json
 	fi
