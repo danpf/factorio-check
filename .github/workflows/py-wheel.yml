@@ -36,8 +36,7 @@ jobs:
     permissions:
       id-token: write
     environment:
-      name: publishing
-      url: https://pypi.org/p/factorio-check
+      name: pypideployment
     runs-on: ubuntu-latest
     if: github.event_name == 'release' && github.event.action == 'published'
     steps:
