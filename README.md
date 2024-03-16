@@ -1,4 +1,8 @@
 # Factorio Testing Mod: factorio-check
+______________________________________________________________________
+
+[![Docker Pulls](https://badgen.net/docker/pulls/danpfuw/factorio-check?icon=docker&label=pulls)](https://hub.docker.com/r/danpfuw/factorio-check/)
+______________________________________________________________________
 
 ## Description
 

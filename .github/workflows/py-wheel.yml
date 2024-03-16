@@ -1,0 +1,51 @@
+---
+name: Python Wheel distribution
+'on':
+  workflow_dispatch: null
+  pull_request: null
+  push:
+    branches:
+      - master
+  release:
+    types:
+      - published
+env:
+  FORCE_COLOR: 3
+concurrency:
+  group: '${{ github.workflow }}-${{ github.ref }}'
+  cancel-in-progress: true
+jobs:
+  build_sdist:
+    name: Build SDist
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Build SDist
+        run: pipx run build --sdist src/python/factorio_check
+      - name: Check metadata
+        run: pipx run twine check src/python/factorio_check/dist/*
+      - uses: actions/upload-artifact@v3
+        with:
+          path: src/python/factorio_check/dist/*.tar.gz
+  upload_all:
+    name: Upload if release
+    needs:
+      - build_sdist
+    permissions:
+      id-token: write
+    environment:
+      name: publishing
+      url: https://pypi.org/p/factorio-check
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' && github.event.action == 'published'
+    steps:
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+      - uses: actions/download-artifact@v3
+        with:
+          name: artifact
+          path: dist
+      - uses: pypa/gh-action-pypi-publish@release/v1
