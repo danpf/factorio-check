@@ -139,6 +139,14 @@ lua-language-server addon installed.  This lua-language-server addon enables you
 if integrated with CI, can provide insight into areas where your code might be missing edge-case handling, as well as if your formatting
 has deviated from whatever is desired.
 
+
+The image is tagged based on both this library's version, as well as the factorio version. This manifests as:
+```
+danpfuw/factorio-check:{ this library version }_{ factorio release version }
+
+ex.
+danpfuw/factorio-check:0.0.2_1.1.104
+```
 ______________________________________________________________________
 
 #### Factorio Docker Image: Static Analysis
@@ -149,7 +157,7 @@ To run static analysis on the local scenario, or mod you are developing, simply 
 $ docker run --rm \
     -v "$(pwd)":"$(pwd):ro" \
     -e MODE=LINT \
-    -t danpfuw/factorio-check:${{ matrix.version_and_sha.version }} \
+    -t danpfuw/factorio-check:0.0.2_1.1.104 \
     "$(pwd)"
 > Diagnosis completed, no problems found
 
@@ -157,7 +165,7 @@ $ docker run --rm \
 
 > Diagnosis complete, 1 problems found, see /opt/luals/lua-language-server/log/check.json
 > Linting complete: Errors found!
-> file:///Users/martha/git/factorio-check/src/lua/simple-scenario/control.lua code: undefined-field, message: Undefined field `player_indexxx`., severity: 2, source: Lua Diagnostics., line:char-range: 6:38-6:52
+> file:///.../src/lua/simple-scenario/control.lua code: undefined-field, message: Undefined field `player_indexxx`., severity: 2, source: Lua Diagnostics., line:char-range: 6:38-6:52
 ```
 
 You can also lint the formatting of the project by adding the environment variable `LINT_FORMATTING=ON`. Keep in mind that you must follow this
