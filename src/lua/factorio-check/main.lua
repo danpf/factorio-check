@@ -3,8 +3,10 @@ require("util")
 local Public = {}
 
 function Public.init()
-	global.prev_global_state = table.deepcopy(global)
-	global.registered_tests = {}
+	if global.prev_global_state == nil then
+		global.prev_global_state = table.deepcopy(global)
+		global.registered_tests = {}
+	end
 end
 
 function Public.reset_global_state()
@@ -20,14 +22,12 @@ end
 function Public.assert_equal(actual, expected, message)
 	if actual ~= expected then
 		error(message or ("Expected " .. tostring(expected) .. ", got " .. tostring(actual)))
-		log(message or ("Error: Expected " .. tostring(expected) .. ", got " .. tostring(actual)))
 	end
 end
 
 function Public.assert_not_equal(actual, expected, message)
 	if actual == expected then
 		error(message or ("Expected " .. tostring(expected) .. ", got " .. tostring(actual)))
-		log(message or ("Error: Expected " .. tostring(expected) .. ", got " .. tostring(actual)))
 	end
 end
 

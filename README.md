@@ -1,17 +1,17 @@
-
 # Factorio Testing Mod: factorio-check
 
 ## Description
-This is a mod that enables unit testing for Factorio mods and scenarios.
 
+This is a mod that enables unit testing for Factorio mods and scenarios.
 
 This repository contains 3 main tools that you may want to use:
 
-* factorio-check python library
-* factorio-check factorio mod
-* factorio-check Dockerfile
+- factorio-check python library
+- factorio-check factorio mod
+- factorio-check Dockerfile
 
----
+______________________________________________________________________
+
 #### Python library
 
 The python library is essentially a factorio executable wrapper that watches,
@@ -30,24 +30,31 @@ Its invocation looks like this:
 
 Upon installation, the python library provides access to the `run-factorio-test` command.
 Up to date examples can be found in the .github directory, but it is run typically via something like this:
+
 ```bash
 run-factorio-test \
     --factorio_executable /opt/factorio/bin/x64/factorio \
-    --factorio_scenario simple-scenario \
+    --scenario simple-scenario \
+    --scenario_copy_dirs /opt/factorio-check-examples/simple-scenario \
     --factorio_scenario_dir /opt/factorio/scenarios
-    --factorio_scenario_copy_dirs /opt/factorio-check-examples/simple-scenario
 
 # Alternative invocation for mods
 run-factorio-test \
     --factorio_executable /opt/factorio/bin/x64/factorio \
-    --factorio_mods_dir /opt/factorio/mods
-    --factorio_mods_copy_dirs /opt/factorio-check-examples/simple-mod
+    --factorio_mods_dir /opt/factorio/mods \
+    --mods_copy_dirs /opt/factorio-check-examples/simple-mod
+
 ```
+
+**Note**
+The above can also be modified to run using environment variables, by prepending `FACTORIO_CHECK_` to any of the arguments.
+lists become comma separated values.  use_box64 is unique in that the value is not checked, only the existence
+of the environment variable is.
 
 The library looks to manage scenarios and mods even when they are in different directories
 by copying them to the factorio scenario/mods directory before the executable is started.  Multiple mods
-and scenarios can be provided to the arguments with suffix '_dirs' so you can copy more than
-1 mod/scenario if you want to.  Unless otherwise specified via `--factorio_scenario`, the `base/freeplay`
+and scenarios can be provided to the arguments with suffix '\_dirs' so you can copy more than
+1 mod/scenario if you want to.  Unless otherwise specified via `--scenario`, the `base/freeplay`
 scenario is used.
 
 For more information, you can find the code [HERE](src/python/factorio_check).
@@ -55,7 +62,8 @@ For more information, you can find the code [HERE](src/python/factorio_check).
 **The library is inspired by the python code from [Angels Mods Unit-test script](https://github.com/Arch666Angel/mods/blob/master/angelsdev-unit-test/python/factorio_controller.py)**
 **Thank you to Angel for the open-source library**
 
----
+______________________________________________________________________
+
 #### Factorio mod
 
 This Lua script provides a basic lua test framework, designed to facilitate the creation and execution
@@ -66,6 +74,7 @@ The core of the script is `Public.run_tests` which iterates through all register
 them, and logs their pass or fail status.
 
 brief excerpt of implemented testing for a module:
+
 ```lua
 local FC = require("__factorio-check__/main")
 local scenario_scripts = require("scenario_scripts.thing")
@@ -90,6 +99,7 @@ See the [scenario](src/lua/simple-scenario) and [mod](src/lua/simple-mod) for mo
 framework could be integrated with existing codebases.
 
 Very briefly, it is simple to create a tests/main.lua file, and add the following code to control.lua
+
 ```lua
 if script.active_mods["factorio-check"] then
 	local tests = require("tests.main")
@@ -101,65 +111,64 @@ if script.active_mods["factorio-check"] then
 end
 ```
 
----
+You may want to consider adding the tests to the bottom of your files to have access to local functions.
+
+```lua
+local function foo()
+    return "foo"
+end
+
+
+if script.active_mods["factorio-check"] then
+    local FC = require("__factorio-check__/main")
+	FC.register_test("check is foo", function()
+		FC.assert_equal("foo", foo())
+	end)
+end
+```
+
+______________________________________________________________________
+
 #### Factorio Docker Image
 
 This image is the core of this CI toolkit.  It integrates all of the aforementioned tools, and provides a modular interface
 that can be used to evaluate your mods or scenarios.
 
-
 The image also, very importantly, has the [vscode-factoriomod-debug](https://github.com/justarandomgeek/vscode-factoriomod-debug)
 lua-language-server addon installed.  This lua-language-server addon enables you to quickly evaluate your library for potential bugs and,
-if integrated with CI, can provide insight into areas where your code might be missing edge-case handling, as well as 
+if integrated with CI, can provide insight into areas where your code might be missing edge-case handling, as well as if your formatting
+has deviated from whatever is desired.
 
+______________________________________________________________________
 
----
 #### Factorio Docker Image: Static Analysis
+
 To run static analysis on the local scenario, or mod you are developing, simply run:
+
 ```bash
 $ docker run --rm \
     -v "$(pwd)":"$(pwd):ro" \
-    --entrypoint /usr/local/bin/lint-entrypoint.sh \
+    -e MODE=LINT \
     -t danpfuw/factorio-check:${{ matrix.version_and_sha.version }} \
     "$(pwd)"
 > Diagnosis completed, no problems found
 
-# or with errors:
-$ docker run --rm \
-    -v "$(pwd)":"$(pwd):ro" \
-    --entrypoint lint-entrypoint.sh \
-    -t danpfuw/factorio-check:latest \
-    "$(pwd)"
+# Errors manifest as:
+
 > Diagnosis complete, 1 problems found, see /opt/luals/lua-language-server/log/check.json
-> {
->     "file:///Users/martha/git/factorio-docker/src/lua/simple-scenario/./control.lua": [
->         {
->             "code": "undefined-field",
->             "message": "Undefined field `player_indexx`.",
->             "range": {
->                 "end": {
->                     "character": 51,
->                     "line": 6
->                 },
->                 "start": {
->                     "character": 38,
->                     "line": 6
->                 }
->             },
->             "severity": 2,
->             "source": "Lua Diagnostics."
->         }
->     ]
-> }
+> Linting complete: Errors found!
+> file:///Users/martha/git/factorio-check/src/lua/simple-scenario/control.lua code: undefined-field, message: Undefined field `player_indexxx`., severity: 2, source: Lua Diagnostics., line:char-range: 6:38-6:52
 ```
 
-The formatting isn't great, and sometimes there may be duplicates, but it
-should at least provide some insight into where you might be able to improve
-your work.
+You can also lint the formatting of the project by adding the environment variable `LINT_FORMATTING=ON`. Keep in mind that you must follow this
+[documentation](https://luals.github.io/wiki/formatter/) and add a `.editorconfig` file to your project to enable this feature.
+
+**Note:** sometimes lua-language-server may report duplicates, but it should at least provide some insight into where you might be able to improve your work.
 
 **This is heavily based on the work at [factoriotools/factorio-docker](https://github.com/factoriotools/factorio-docker)**
 **Thank you to the factoriotools team for their creation and maintenance of this open source library**
 **Thank you to justarandomgeek for their [vscode-factoriomod-debug](https://github.com/justarandomgeek/vscode-factoriomod-debug) library**
 
 ## License
+
 MIT License. See the LICENSE file for details.

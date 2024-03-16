@@ -21,7 +21,7 @@ class FactorioController:
     factorio_scenario_dir: Path | None
     scenario: str
     scenario_copy_dirs: list[Path]
-    factorio_mods_copy_dirs: list[Path]
+    mods_copy_dirs: list[Path]
     factorio_process: subprocess.Popen | None = None
     testing_logs: list[str] = field(default_factory=list)
     use_box64: bool = False
@@ -54,7 +54,7 @@ class FactorioController:
                 log.info(copy_to_path)
                 shutil.copytree(pth, copy_path)
         if self.factorio_mods_dir:
-            for pth in self.factorio_mods_copy_dirs:
+            for pth in self.mods_copy_dirs:
                 copy_path = self.factorio_mods_dir / pth.name
                 if copy_path.is_dir():
                     shutil.rmtree(copy_path)
@@ -71,7 +71,9 @@ class FactorioController:
                     try:
                         self.factorio_process.wait(timeout=timeout_seconds)
                     except subprocess.TimeoutExpired:
-                        log.warning(f"Process did not terminate in {timeout_seconds} seconds, forcefully killing.")
+                        log.warning(
+                            f"Process did not terminate in {timeout_seconds} seconds, forcefully killing."
+                        )
                         self.factorio_process.kill()
                 except Exception as e:
                     log.error(f"Error while terminating the process: {e}")
@@ -165,25 +167,34 @@ def parse_args(args: list[str]) -> argparse.Namespace:
         "--factorio_executable",
         type=Path,
         help="Path to the factorio executable",
-        required=True,
+        required=False,
+        default=Path(os.environ["FACTORIO_CHECK_factorio_executable"])
+        if os.environ.get("FACTORIO_CHECK_factorio_executable")
+        else Path("/opt/factorio/bin/x64/factorio"),
     )
     parser.add_argument(
         "--use_box64",
         help="Use box64 to run factorio",
-        default=False,
+        default=True
+        if os.environ.get("FACTORIO_CHECK_use_box64")
+        else False,
         action="store_true",
     )
     parser.add_argument(
         "--factorio_mods_dir",
         type=Path,
         help="Path to the factorio mods directory",
-        default=Path("/opt/factorio/mods"),
+        default=Path(os.environ["FACTORIO_CHECK_factorio_mods_dir"])
+        if os.environ.get("FACTORIO_CHECK_factorio_mods_dir")
+        else Path("/opt/factorio/mods"),
     )
     parser.add_argument(
         "--factorio_scenario_dir",
         type=Path,
         help="Path to the factorio scenario directory",
-        default=Path("/opt/factorio/scenarios"),
+        default=Path(os.environ["FACTORIO_CHECK_factorio_scenario_dir"])
+        if os.environ.get("FACTORIO_CHECK_factorio_scenario_dir")
+        else Path("/opt/factorio/scenarios"),
     )
     parser.add_argument(
         "--scenario",
@@ -195,14 +206,18 @@ def parse_args(args: list[str]) -> argparse.Namespace:
         "--scenario_copy_dirs",
         type=Path,
         nargs="+",
-        default=[Path(x) for x in os.environ["FACTORIO_CHECK_scenario_copy_dirs"].split(",")]
+        default=[
+            Path(x) for x in os.environ["FACTORIO_CHECK_scenario_copy_dirs"].split(",")
+        ]
         if os.environ.get("FACTORIO_CHECK_scenario_copy_dirs")
         else [],
         help="Path(s) to copy to the factorio scenario directory",
     )
     parser.add_argument(
-        "--factorio_mods_copy_dirs",
-        default=[Path(x) for x in os.environ["FACTORIO_CHECK_mods_copy_dirs"].split(",")]
+        "--mods_copy_dirs",
+        default=[
+            Path(x) for x in os.environ["FACTORIO_CHECK_mods_copy_dirs"].split(",")
+        ]
         if os.environ.get("FACTORIO_CHECK_mods_copy_dirs")
         else [],
         type=Path,
@@ -225,7 +240,7 @@ def main_cli() -> None:
         factorio_mods_dir=args.factorio_mods_dir,
         factorio_scenario_dir=args.factorio_scenario_dir,
         scenario_copy_dirs=args.scenario_copy_dirs,
-        factorio_mods_copy_dirs=args.factorio_mods_copy_dirs,
+        mods_copy_dirs=args.mods_copy_dirs,
         scenario=args.scenario,
         max_seconds=args.max_test_seconds,
         use_box64=args.use_box64,
