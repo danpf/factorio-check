@@ -1,0 +1,10 @@
+{
+  "name": "FactorioTestingMod",
+  "version": "0.1.0",
+  "title": "Factorio Testing Mod",
+  "author": "Danny Farrell",
+  "contact": "danpf @ github",
+  "homepage": "https://github.com/danpf/factorio-docker",
+  "factorio_version": "1.1",
+  "description": "A mod for testing Factorio mods and scenarios."
+}

@@ -1,0 +1,9 @@
+{
+    "name": "factorio-check",
+    "title": "Factorio Check",
+    "author": "me myself and I",
+    "version": "0.1.0",
+    "factorio_version": "1.1",
+    "dependencies": ["base >= 1.1"],
+    "description": "A simple Factorio mod for unit tests."
+}

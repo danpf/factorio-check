@@ -1,0 +1,117 @@
+name: Factorio Mod and Scenario Testing
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+  pull_request:
+    branches:
+      - master
+jobs:
+  build-testing-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      buildmatrix: ${{ steps.set-matrix.outputs.buildmatrix }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Read versions and build matrix
+        id: set-matrix
+        run: |
+          echo "Reading buildinfo.json file"
+          BUILDMATRIX=$(jq -rcj --arg ref "${{ github.ref_name }}" '. | to_entries | map(select(.key | startswith("1.1"))) | map({version: .key, sha256: .value.sha256, tags: [.value.tags[] | "danpfuw/factorio-check:\($ref)_\(.)"]})' buildinfo.json)
+          BUILDMATRIX=$(jq -rcj --arg ref "${{ github.ref_name }}" '. | to_entries | map(select(.key | startswith("1.1"))) | map({version: .key, sha256: .value.sha256, tags: [.value.tags[] | "danpfuw/factorio-check:\($ref)_\(.)"] | join(",")})' buildinfo.json)
+          echo "buildmatrix=${BUILDMATRIX}" | tee -a $GITHUB_OUTPUT
+  build-and-test:
+    needs: "build-testing-matrix"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        factorio_ids: ${{ fromJson(needs.build-testing-matrix.outputs.buildmatrix) }}
+        platform: ["linux/amd64", "linux/arm64"]
+    permissions:
+      id-token: write
+    environment:
+      name: cicd
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and test base
+        uses: docker/build-push-action@v5
+        with:
+          file: docker/Dockerfile
+          tags: local-factorio-check
+          build-args: |
+            VERSION=${{ matrix.factorio_ids.version }}
+            SHA256=${{ matrix.factorio_ids.sha256 }}
+          platforms: ${{ matrix.platform }}
+          load: true
+      - name: Run simple-scenario linting
+        run: |
+          docker run --rm \
+          -e LOGLEVEL=DEBUG \
+          -e MODE=LINT \
+          -e TARGET_PATH=/opt/factorio-check-examples/simple-scenario \
+          -t local-factorio-check
+      - name: Run simple-scenario tests
+        run: |
+          docker run --rm \
+          -e LOGLEVEL=DEBUG \
+          -e MODE=TEST \
+          -e PLATFORM=${{ matrix.platform }} \
+          -e FACTORIO_CHECK_scenario=simple-scenario \
+          -e FACTORIO_CHECK_scenario_copy_dirs=/opt/factorio-check-examples/simple-scenario \
+          -t local-factorio-check
+      - name: Run simple-mod linting
+        run: |
+          docker run --rm \
+          -e LOGLEVEL=DEBUG \
+          -e MODE=LINT \
+          -e TARGET_PATH=/opt/factorio-check-examples/simple-mod \
+          -t local-factorio-check
+      - name: Run simple-mod tests
+        run: |
+          docker run --rm \
+          -e LOGLEVEL=DEBUG \
+          -e MODE=TEST \
+          -e PLATFORM=${{ matrix.platform }} \
+          -e FACTORIO_CHECK_mods_copy_dirs=/opt/factorio-check-examples/simple-mod \
+          -t local-factorio-check
+  # TODO only on tag
+  final_push:
+    needs: ["build-and-test", "build-testing-matrix"]
+    strategy:
+      matrix:
+        factorio_ids: ${{ fromJson(needs.build-testing-matrix.outputs.buildmatrix) }}
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    environment:
+      name: cicd
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push base
+        uses: docker/build-push-action@v5
+        with:
+          file: docker/Dockerfile
+          tags: ${{ matrix.factorio_ids.tags }}
+          build-args: |
+            VERSION=${{ matrix.factorio_ids.version }}
+            SHA256=${{ matrix.factorio_ids.sha256 }}
+          platforms: linux/amd64,linux/arm64
+          push: true
