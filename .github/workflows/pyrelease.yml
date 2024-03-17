@@ -19,6 +19,10 @@ jobs:
     name: Build SDist
     runs-on: ubuntu-latest
     steps:
+      - name: Install Git
+        run: |
+          sudo apt-get update -y
+          sudo apt-get -y install git
       - uses: actions/checkout@v4
         with:
           submodules: true
@@ -26,13 +30,12 @@ jobs:
         run: pipx run build --sdist src/python/factorio_check
       - name: Check metadata
         run: pipx run twine check src/python/factorio_check/dist/*
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           path: src/python/factorio_check/dist/*.tar.gz
   upload_all:
     name: Upload if release
-    needs:
-      - build_sdist
+    needs: [build_sdist]
     permissions:
       id-token: write
     environment:
@@ -44,7 +47,7 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: 3.x
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: artifact
           path: dist
