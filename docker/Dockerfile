@@ -1,3 +1,13 @@
+
+FROM debian:12-slim as pybuilder
+RUN apt-get -qq update \
+	&& DEBIAN_FRONTEND=noninteractive apt-get -qqy install python3 python3-pip python3-venv git
+
+COPY . /tmp/factorio-check
+RUN python3 -m venv /opt/venv \
+    && /opt/venv/bin/pip install pipx  \
+    && /opt/venv/bin/pipx run build --sdist /tmp/factorio-check/src/python/factorio_check
+
 FROM debian:12-slim
 
 LABEL maintainer="https://github.com/danpf/factorio-check"
@@ -95,6 +105,7 @@ RUN mkdir /opt/luals \
 	&& cd / \
 	&& mkdir /opt/factorio-check-examples
 
+COPY --from=pybuilder /tmp/factorio-check/src/python/factorio_check/dist /tmp/fc_dist
 COPY docker/files/*.sh /usr/local/bin/
 COPY docker/files/server-settings.json /opt/factorio/server-settings.json
 COPY docker/files/config.ini /opt/factorio/config/config.ini
@@ -107,8 +118,8 @@ COPY src/lua/simple-mod /opt/factorio-check-examples/simple-mod
 COPY src/python/factorio_check /tmp/factorio_check
 
 RUN python3 -m venv /opt/venv \
-    && /opt/venv/bin/pip install --no-cache-dir /tmp/factorio_check  \
-	&& rm -rf /tmp/factorio_check
+    && /opt/venv/bin/pip install --no-cache-dir /tmp/fc_dist/*.tar.gz  \
+	&& rm -rf /tmp/fc_dist/
 
 ENV VIRTUAL_ENV /opt/venv
 ENV PATH="/opt/venv/bin:$PATH:/opt/luals/lua-language-server/bin"
