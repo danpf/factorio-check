@@ -6,7 +6,10 @@ RUN apt-get -qq update \
 COPY . /tmp/factorio-check
 RUN python3 -m venv /opt/venv \
     && /opt/venv/bin/pip install pipx  \
-    && /opt/venv/bin/pipx run build --sdist /tmp/factorio-check/src/python/factorio_check
+    && cd /tmp/factorio-check \
+    && echo "EVAL123" \
+    && ls -la . \
+    && /opt/venv/bin/pipx run build --sdist ./src/python/factorio_check
 
 FROM debian:12-slim
 
