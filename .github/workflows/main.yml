@@ -39,18 +39,8 @@ jobs:
     environment:
       name: cicd
     steps:
-      - name: Install Git
-        run: |
-          sudo apt-get update -y
-          sudo apt-get -y install git
-          echo "EVAL111"
-          ls -la
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Debug step
-        run: |
-          echo "EVAL222"
-          ls -la
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
@@ -109,10 +99,6 @@ jobs:
     environment:
       name: cicd
     steps:
-      - name: Install Git
-        run: |
-          sudo apt-get update -y
-          sudo apt-get -y install git
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Set up QEMU

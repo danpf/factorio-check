@@ -19,6 +19,7 @@ jobs:
     name: Build SDist
     runs-on: ubuntu-latest
     steps:
+      # Required for setuptools-scm
       - name: Install Git
         run: |
           sudo apt-get update -y
