@@ -127,8 +127,11 @@ class FactorioController:
                     self.tests_ran = True
                     break
                 elif unit_tests_start:
-                    log.debug("adding line")
+                    log.debug(f"Unit tests start Add: {line}")
                     self.testing_logs.append(line)
+                else:
+                    log.debug(f"Pre/Post test line: {line}")
+
 
     def analyze_unit_test_results(self) -> bool:
         failed_tests = False

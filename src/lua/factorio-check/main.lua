@@ -1,10 +1,10 @@
-require("util")
-
 local Public = {}
 
 function Public.init()
 	if global.prev_global_state == nil then
 		global.prev_global_state = table.deepcopy(global)
+	end
+	if global.registered_tests == nil then
 		global.registered_tests = {}
 	end
 end
@@ -16,7 +16,11 @@ function Public.reset_global_state()
 end
 
 function Public.register_test(name, test_function)
-	global.registered_tests[name] = test_function
+	if global.registered_tests ~= nil then
+		global.registered_tests[name] = test_function
+	else
+		global.registered_tests = { name = test_function }
+	end
 end
 
 function Public.assert_equal(actual, expected, message)

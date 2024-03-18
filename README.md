@@ -1,7 +1,8 @@
 # Factorio Testing Mod: factorio-check
 ______________________________________________________________________
 
-[![Docker Pulls](https://badgen.net/docker/pulls/danpfuw/factorio-check?icon=docker&label=pulls)](https://hub.docker.com/r/danpfuw/factorio-check/)
+[![Docker Pulls](https://flat.badgen.net/docker/pulls/danpfuw/factorio-check?icon=docker&label=pulls)](https://hub.docker.com/r/danpfuw/factorio-check/)
+[![PyPi Downloads](https://flat.badgen.net/pypi/dm/factorio-check)](https://pypi.org/project/factorio-check/)
 ______________________________________________________________________
 
 ## Description
@@ -149,7 +150,7 @@ The image is tagged based on both this library's version, as well as the factori
 danpfuw/factorio-check:{ this library version }_{ factorio release version }
 
 ex.
-danpfuw/factorio-check:0.0.2_1.1.104
+danpfuw/factorio-check:0.0.9_1.1.104
 ```
 ______________________________________________________________________
 
@@ -162,7 +163,7 @@ $ docker run --rm \
     -v "$(pwd)":"$(pwd):ro" \
     -e MODE=LINT \
     -e TARGET_PATH="$(pwd)"
-    -t danpfuw/factorio-check:0.0.2_1.1.104 \
+    -t danpfuw/factorio-check:0.0.9_1.1.104 \
     "$(pwd)"
 > Diagnosis completed, no problems found
 
@@ -173,8 +174,47 @@ $ docker run --rm \
 > file:///.../src/lua/simple-scenario/control.lua code: undefined-field, message: Undefined field `player_indexxx`., severity: 2, source: Lua Diagnostics., line:char-range: 6:38-6:52
 ```
 
+
 You can also lint the formatting of the project by adding the environment variable `LINT_FORMATTING=ON`. Keep in mind that you must follow this
 [documentation](https://luals.github.io/wiki/formatter/) and add a `.editorconfig` file to your project to enable this feature.
+
+
+#### Factorio Docker Image: Github Actions Static Analysis and Testing
+
+To run this static analysis and testing you can easily incorporate this image into the github actions folder of your mod or scenario.
+
+Example:
+```yaml
+---
+name: Test My Mod
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      FACTORIO_VERSION: 1.1.104
+      FACTORIO_CHECK_VERSION: master
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Lint
+        run: docker run -e MODE=LINT -e TARGET_PATH="$(pwd)" -v "$(pwd)":"$(pwd)":ro danpfuw/factorio-check:${FACTORIO_CHECK_VERSION}_${FACTORIO_VERSION}
+      - name: Test
+        run: |
+          docker run --rm \
+          -v "$(pwd)":"$(pwd)":ro \
+          -e MODE=TEST \
+          -e FACTORIO_CHECK_scenario=my-fun-scenario \
+          -e FACTORIO_CHECK_scenario_copy_dirs="$(pwd)" \
+          -t local-factorio-check
+```
+
 
 **Note:** sometimes lua-language-server may report duplicates, but it should at least provide some insight into where you might be able to improve your work.
 
