@@ -150,7 +150,7 @@ The image is tagged based on both this library's version, as well as the factori
 danpfuw/factorio-check:{ this library version }_{ factorio release version }
 
 ex.
-danpfuw/factorio-check:0.0.10_1.1.104
+danpfuw/factorio-check:0.0.11_1.1.104
 ```
 ______________________________________________________________________
 
@@ -163,7 +163,7 @@ $ docker run --rm \
     -v "$(pwd)":"$(pwd):ro" \
     -e MODE=LINT \
     -e TARGET_PATH="$(pwd)"
-    -t danpfuw/factorio-check:0.0.10_1.1.104
+    -t danpfuw/factorio-check:0.0.11_1.1.104
 > Diagnosis completed, no problems found
 
 # Errors manifest as:
@@ -187,7 +187,7 @@ $ docker run --rm \
     -e MODE=TEST \
     -e FACTORIO_CHECK_scenario=my-fun-scenario \
     -e FACTORIO_CHECK_scenario_copy_dirs="$(pwd)" \
-    -t danpfuw/factorio-check:0.0.10_1.1.104
+    -t danpfuw/factorio-check:0.0.11_1.1.104
 > ...
 > INFO:factorio_check.factorio_controller:analyzing...
 > INFO:factorio_check.factorio_controller:11.291 Script @__factorio-check__/main.lua:43: UNIT TESTS START
