@@ -11,7 +11,7 @@ from typing import Any, Generator
 
 logging.basicConfig()
 log = logging.getLogger(__name__)
-log.setLevel(os.environ.get("LOGLEVEL", "WARNING").upper())
+log.setLevel(os.environ.get("LOGLEVEL", "INFO").upper())
 
 
 @dataclass

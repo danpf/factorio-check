@@ -188,13 +188,28 @@ $ docker run --rm \
     -e FACTORIO_CHECK_scenario=my-fun-scenario \
     -e FACTORIO_CHECK_scenario_copy_dirs="$(pwd)" \
     -t danpfuw/factorio-check:0.0.10_1.1.104
-> Diagnosis completed, no problems found
+> ...
+> INFO:factorio_check.factorio_controller:analyzing...
+> INFO:factorio_check.factorio_controller:11.291 Script @__factorio-check__/main.lua:43: UNIT TESTS START
+> INFO:factorio_check.factorio_controller:11.293 Script @__factorio-check__/main.lua:49: Test 'check is barfoo' passed.
+> INFO:factorio_check.factorio_controller:11.293 Script @__factorio-check__/main.lua:49: Test 'check is foo' passed.
+> INFO:factorio_check.factorio_controller:11.293 Script @__factorio-check__/main.lua:49: Test 'check is bar' passed.
+> INFO:factorio_check.factorio_controller:11.293 Script @__factorio-check__/main.lua:49: Test 'check is foobar' passed.
+> INFO:factorio_check.factorio_controller:11.293 Script @__factorio-check__/main.lua:58: Total tests passed: 4
+> INFO:factorio_check.factorio_controller:11.293 Script @__factorio-check__/main.lua:59: Total tests failed: 0
+> INFO:factorio_check.factorio_controller:11.293 Script @__factorio-check__/main.lua:60: UNIT TESTS DONE: 4/4
 
 # Errors manifest as:
-
-> Diagnosis complete, 1 problems found, see /opt/luals/lua-language-server/log/check.json
-> Linting complete: Errors found!
-> file:///.../src/lua/simple-scenario/control.lua code: undefined-field, message: Undefined field `player_indexxx`., severity: 2, source: Lua Diagnostics., line:char-range: 6:38-6:52
+> ...
+> INFO:factorio_check.factorio_controller:analyzing...
+> INFO:factorio_check.factorio_controller:11.297 Script @__factorio-check__/main.lua:43: UNIT TESTS START
+> INFO:factorio_check.factorio_controller:11.298 Script @__factorio-check__/main.lua:49: Test 'check is barfoo' passed.
+> INFO:factorio_check.factorio_controller:11.298 Script @__factorio-check__/main.lua:49: Test 'check is foo' passed.
+> INFO:factorio_check.factorio_controller:11.298 Script @__factorio-check__/main.lua:49: Test 'check is bar' passed.
+> INFO:factorio_check.factorio_controller:11.304 Script @__factorio-check__/main.lua:52: Test 'check is foobar' failed: __factorio-check__/main.lua:30: Expected foobar, got foobarx
+> INFO:factorio_check.factorio_controller:11.304 Script @__factorio-check__/main.lua:58: Total tests passed: 3
+> INFO:factorio_check.factorio_controller:11.304 Script @__factorio-check__/main.lua:59: Total tests failed: 1
+> INFO:factorio_check.factorio_controller:11.305 Script @__factorio-check__/main.lua:60: UNIT TESTS DONE: 3/4
 ```
 
 You can also lint the formatting of the project by adding the environment variable `LINT_FORMATTING=ON`. Keep in mind that you must follow this
